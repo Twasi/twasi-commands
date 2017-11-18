@@ -1,0 +1,14 @@
+add.usage=Usage: !add [command] [content] Example for !bot: !add !bot Twasi is cool!
+add.successful=The command %s was added successfully.
+add.alreadyExist=The command %s does already exist.
+
+edit.usage=Usage: !edit [command] [new content] Example for !bot: !edit !bot Twasi is the most expandable bot!
+edit.successful=The command %s was edited successfully.
+edit.doesntExist=The command %s doesn't exist.
+
+delete.usage=Usage: !delete [command] Example for !bot: !delete !bot
+delete.successful=The command %s was deleted successfully.
+delete.doesntExist=The command %s doesn't exist.
+
+commands.noneFound=There are no commands available right now. But hey, you can add one: !add [command] [content]
+commands.available=Available commands: %s

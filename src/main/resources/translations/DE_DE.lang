@@ -1,0 +1,14 @@
+add.usage=Benutzung: !add [Befehl] [Inhalt] Beispiel für !bot: !add !bot Twasi ist cool!
+add.successful=Der Befehl %s wurde erfolgreich erstellt.
+add.alreadyExist=Der Befehl %s existiert schon.
+
+edit.usage=Benutzung: !edit [Befehl] [neuer Inhalt] Beispiel für !bot: !edit !bot Twasi ist der erweiterbarste Bot!
+edit.successful=Der Befehl %s wurde erfolgreich geändert.
+edit.doesntExist=Der Befehl %s existiert nicht.
+
+delete.usage=Benutzung: !delete [Befehl] Beispiel für !bot: !delete !bot
+delete.successful=Der Befehl %s wurde erfolgreich gelöscht.
+delete.doesntExist=De Befehl %s existiert nicht.
+
+commands.noneFound=Im moment sind keine Befehle verfügbar. Aber hey, du kannst einen erstellen: !add [Befehl] [Inhalt]
+commands.available=Verfügbare Befehle: %s

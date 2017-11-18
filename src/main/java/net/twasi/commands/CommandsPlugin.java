@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CommandsPlugin extends TwasiPlugin {
 
-    private List<String> permissionKeys = Arrays.asList("commands.add", "commands.edit", "commands.delete");
+    private List<String> permissionKeys = Arrays.asList("commands.add", "commands.edit", "commands.delete", "commands.list");
 
     private Permissions defaultPermission = new Permissions(
             Collections.singletonList(
@@ -29,10 +29,10 @@ public class CommandsPlugin extends TwasiPlugin {
                             null
                     )
             ),
-            Arrays.asList("commands.add", "commands.edit", "commands.delete"),
+            Arrays.asList("commands.add", "commands.edit", "commands.delete", "commands.list"),
             "commands"
     );
-    public String prefix = "[COMMANDS] ";
+    String prefix = "[COMMANDS] ";
 
     public CommandsPlugin() {
     }
@@ -91,7 +91,7 @@ public class CommandsPlugin extends TwasiPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply("Usage: !add [command] [content] Example for !bot: !add !bot Twasi is cool!");
+                    command.reply(getTranslations().getTranslation(user, "add.usage"));
                     return;
                 }
 
@@ -104,9 +104,9 @@ public class CommandsPlugin extends TwasiPlugin {
                 // If the command already exists notify the user
                 if (CommandStore.createCommand(user, name, content)) {
                     // Reply to the user
-                    command.reply("The command " + name + " was added successfully.");
+                    command.reply(getTranslations().getTranslation(user, "add.successful", name));
                 } else {
-                    command.reply("The command " + name + " does already exist.");
+                    command.reply(getTranslations().getTranslation(user, "add.alreadyExist", name));
                 }
             }
         }
@@ -117,7 +117,7 @@ public class CommandsPlugin extends TwasiPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply("Usage: !edit [command] [new content] Example for !bot: !edit !bot Twasi is the most expandable bot!");
+                    command.reply(getTranslations().getTranslation(user, "edit.usage"));
                     return;
                 }
 
@@ -130,9 +130,9 @@ public class CommandsPlugin extends TwasiPlugin {
                 // If the command doesnt exist notify the user
                 if (CommandStore.editCommand(user, name, content)) {
                     // Reply to the user
-                    command.reply("The command " + name + " was edited successfully.");
+                    command.reply(getTranslations().getTranslation(user, "edit.successful", name));
                 } else {
-                    command.reply("The command " + name + " doesn't exist.");
+                    command.reply(getTranslations().getTranslation(user, "edit.doesntExist", name));
                 }
             }
         }
@@ -143,7 +143,7 @@ public class CommandsPlugin extends TwasiPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 2).length != 2) {
                     // Reply with instructions
-                    command.reply("Usage: !delete [command] Example for !bot: !delete !bot");
+                    command.reply(getTranslations().getTranslation(user, "delete.usage"));
                     return;
                 }
 
@@ -155,9 +155,31 @@ public class CommandsPlugin extends TwasiPlugin {
                 // If the command doesn't
                 if (CommandStore.deleteCommand(user, name)) {
                     // Reply to the user
-                    command.reply("The command " + name + " was deleted successfully.");
+                    command.reply(getTranslations().getTranslation(user, "delete.successful", name));
                 } else {
-                    command.reply("The command " + name + " doesn't exist.");
+                    command.reply(getTranslations().getTranslation(user, "delete.doesntExist", name));
+                }
+            }
+        }
+
+        if (command.getCommandName().equalsIgnoreCase("commands")) {
+            if (user.hasPermission(command.getSender(), "commands.list")) {
+                List<CustomCommand> commands = CommandStore.getAllCommands(user);
+                if (commands == null) {
+                    command.reply(getTranslations().getTranslation(user, "commands.noneAvailable"));
+                } else {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("[");
+
+                    String prefix = "";
+                    for (CustomCommand cmd : commands) {
+                        builder.append(prefix);
+                        builder.append(cmd.getName());
+                        prefix = ", ";
+                    }
+
+                    builder.append("]");
+                    command.reply(getTranslations().getTranslation(user, "commands.available", builder.toString()));
                 }
             }
         }

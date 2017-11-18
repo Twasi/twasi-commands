@@ -2,6 +2,7 @@ package net.twasi.commands;
 
 import net.twasi.core.database.Database;
 import net.twasi.core.database.models.User;
+import net.twasi.core.models.Message.Command;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.query.Query;
 
@@ -51,6 +52,15 @@ class CommandStore {
 
         Database.getStore().delete(command);
         return true;
+    }
+
+    static List<CustomCommand> getAllCommands(User user) {
+        List<CustomCommand> commands = Database.getStore().createQuery(CustomCommand.class)
+                .field("user").equal(user).asList();
+        if (commands.size() == 0) {
+            return null;
+        }
+        return commands;
     }
 
 }
