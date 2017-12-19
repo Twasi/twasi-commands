@@ -6,9 +6,10 @@ import net.twasi.core.models.Message.Command;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
-class CommandStore {
+public class CommandStore {
 
     static CustomCommand getCommandByName(User user, String name) {
         Query<CustomCommand> q = Database.getStore().createQuery(CustomCommand.class);
@@ -54,11 +55,11 @@ class CommandStore {
         return true;
     }
 
-    static List<CustomCommand> getAllCommands(User user) {
+    public static List<CustomCommand> getAllCommands(User user) {
         List<CustomCommand> commands = Database.getStore().createQuery(CustomCommand.class)
                 .field("user").equal(user).asList();
         if (commands.size() == 0) {
-            return null;
+            return new ArrayList<>();
         }
         return commands;
     }

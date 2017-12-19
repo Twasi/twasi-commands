@@ -1,5 +1,6 @@
 package net.twasi.commands;
 
+import net.twasi.commands.web.CommandHandler;
 import net.twasi.core.database.Database;
 import net.twasi.core.database.models.User;
 import net.twasi.core.database.models.permissions.PermissionEntity;
@@ -41,6 +42,9 @@ public class CommandsPlugin extends TwasiPlugin {
     public void onEnable() {
         // Register our own entity
         Database.getMorphia().mapPackageFromClass(CustomCommand.class);
+
+        // Register our own api endpoint
+        registerWebHandler("/api/commands", new CommandHandler());
     }
 
     @Override
@@ -152,7 +156,7 @@ public class CommandsPlugin extends TwasiPlugin {
                 // Map to our strings
                 String name = splitted[1];
 
-                // If the command doesn't
+                // If the command doesn't exist
                 if (CommandStore.deleteCommand(user, name)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "delete.successful", name));
