@@ -1,8 +1,8 @@
-package net.twasi.commands.web;
+package net.twasiplugin.commands.web;
 
 import com.sun.net.httpserver.HttpExchange;
-import net.twasi.commands.CommandStore;
-import net.twasi.commands.CustomCommand;
+import net.twasiplugin.commands.CommandStore;
+import net.twasiplugin.commands.CustomCommand;
 import net.twasi.core.database.models.User;
 import net.twasi.core.webinterface.dto.ApiDTO;
 import net.twasi.core.webinterface.dto.error.UnauthorizedDTO;

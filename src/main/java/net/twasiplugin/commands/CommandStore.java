@@ -1,9 +1,7 @@
-package net.twasi.commands;
+package net.twasiplugin.commands;
 
 import net.twasi.core.database.Database;
 import net.twasi.core.database.models.User;
-import net.twasi.core.models.Message.Command;
-import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;

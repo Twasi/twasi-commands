@@ -1,93 +1,60 @@
-package net.twasi.commands;
+package net.twasiplugin.commands;
 
-import net.twasi.commands.web.CommandHandler;
 import net.twasi.core.database.Database;
 import net.twasi.core.database.models.User;
-import net.twasi.core.database.models.permissions.PermissionEntity;
-import net.twasi.core.database.models.permissions.PermissionEntityType;
-import net.twasi.core.database.models.permissions.PermissionGroups;
 import net.twasi.core.database.models.permissions.Permissions;
-import net.twasi.core.interfaces.api.TwasiInterface;
 import net.twasi.core.logger.TwasiLogger;
-import net.twasi.core.models.Message.Command;
-import net.twasi.core.models.Message.Message;
-import net.twasi.core.plugin.api.TwasiPlugin;
+import net.twasi.core.models.Message.TwasiCommand;
+import net.twasi.core.models.Message.TwasiMessage;
+import net.twasi.core.plugin.api.TwasiUserPlugin;
+import net.twasi.core.plugin.api.events.TwasiCommandEvent;
+import net.twasi.core.plugin.api.events.TwasiInstallEvent;
+import net.twasi.core.plugin.api.events.TwasiMessageEvent;
+import net.twasi.core.plugin.api.events.TwasiUninstallEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CommandsPlugin extends TwasiPlugin {
+import static net.twasiplugin.commands.CommandsPlugin.defaultPermission;
+import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
-    private List<String> permissionKeys = Arrays.asList("commands.add", "commands.edit", "commands.delete", "commands.list");
-
-    private Permissions defaultPermission = new Permissions(
-            Collections.singletonList(
-                    new PermissionEntity(
-                            PermissionEntityType.GROUP,
-                            PermissionGroups.MODERATOR,
-                            null
-                    )
-            ),
-            Arrays.asList("commands.add", "commands.edit", "commands.delete", "commands.list"),
-            "commands"
-    );
-    String prefix = "[COMMANDS] ";
-
-    public CommandsPlugin() {
-    }
+public class CommandsUserPlugin extends TwasiUserPlugin {
 
     @Override
-    public void onEnable() {
-        // Register our own entity
-        Database.getMorphia().mapPackageFromClass(CustomCommand.class);
-
-        // Register our own api endpoint
-        registerWebHandler("/api/commands", new CommandHandler());
-    }
-
-    @Override
-    public void onDisable() {
-    }
-
-    @Override
-    public void onInstall(TwasiInterface inf) {
+    public void onInstall(TwasiInstallEvent e) {
         // Get the user we are installing for
-        User user = inf.getStreamer().getUser();
+        User user = getTwasiInterface().getStreamer().getUser();
 
-        // Copy the list of permissions to not generate a ConcurrentListModificationException
-        List<Permissions> newPermissions = new ArrayList<>(user.getPermissions());
+        // Add the default permissionn
+        user.getPermissions().add(defaultPermission);
 
-        // If not all keys exist anywhere in the database
-        if (!user.doAllPermissionKeysExist(permissionKeys)) {
-            TwasiLogger.log.info(prefix + "Not all permissions found. Created default ones.");
-
-            // Go trough every permission object
-            for (Permissions perm : user.getPermissions()) {
-                // If he name is commands, delete it
-                if (perm.getName() != null && perm.getName().equalsIgnoreCase("commands")) {
-                    TwasiLogger.log.info(prefix + "Overwritten permission with name commands");
-                    newPermissions.remove(perm);
-                }
-            }
-
-            // Set our (probably) removed permissions back to the user
-            user.setPermissions(newPermissions);
-
-            // Add the default permissions
-            user.getPermissions().add(defaultPermission);
-
-            // Save everything
-            Database.getStore().save(user);
-        } else {
-            TwasiLogger.log.debug(prefix + " All permissions keys exist. We are ready to go!");
-        }
+        // Save everything
+        Database.getStore().save(user);
+        TwasiLogger.log.debug(prefix + " Commands installed successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
     @Override
-    public void onCommand(Command command) {
-        User user = command.getTwasiInterface().getStreamer().getUser();
+    public void onUninstall(TwasiUninstallEvent e) {
+        // Get the user we are uninstalling for
+        User user = getTwasiInterface().getStreamer().getUser();
+
+        List<Permissions> filteredPermissions = user.getPermissions().stream().filter(perm -> !perm.getName().equalsIgnoreCase("commands")).collect(Collectors.toList());
+
+        // Set our (probably) removed permissions back to the user
+        user.setPermissions(filteredPermissions);
+
+        // Add the default permission
+        user.getPermissions().add(defaultPermission);
+
+        // Save everything
+        Database.getStore().save(user);
+        TwasiLogger.log.debug(prefix + " Commands uninstalled successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
+    }
+
+    @Override
+    public void onCommand(TwasiCommandEvent e) {
+        User user = getTwasiInterface().getStreamer().getUser();
+        TwasiCommand command = e.getCommand();
 
         // If the command is add
         if (command.getCommandName().equalsIgnoreCase("add")) {
@@ -183,15 +150,16 @@ public class CommandsPlugin extends TwasiPlugin {
                     }
 
                     builder.append("]");
-                    command.reply(getTranslations().getTranslation(user, "commands.available", builder.toString()));
+                    command.reply(getTranslation("commands.available", builder.toString()));
                 }
             }
         }
     }
 
     @Override
-    public void onMessage(Message msg) {
-        User user = msg.getTwasiInterface().getStreamer().getUser();
+    public void onMessage(TwasiMessageEvent e) {
+        User user = getTwasiInterface().getStreamer().getUser();
+        TwasiMessage msg = e.getMessage();
 
         String[] splitted = msg.getMessage().split(" ");
         String name = splitted[0];
@@ -202,4 +170,5 @@ public class CommandsPlugin extends TwasiPlugin {
             msg.reply(command.getContent());
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package net.twasi.commands;
+package net.twasiplugin.commands;
 
 import net.twasi.core.database.models.User;
 import org.bson.types.ObjectId;
