@@ -25,7 +25,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         // Get the user we are installing for
         User user = getTwasiInterface().getStreamer().getUser();
 
-        // Add the default permissionn
+        // Add the default permission
         user.getPermissions().add(defaultPermission);
 
         // Save everything
@@ -40,11 +40,8 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         List<Permissions> filteredPermissions = user.getPermissions().stream().filter(perm -> !perm.getName().equalsIgnoreCase("commands")).collect(Collectors.toList());
 
-        // Set our (probably) removed permissions back to the user
+        // Set our removed permissions back to the user
         user.setPermissions(filteredPermissions);
-
-        // Add the default permission
-        user.getPermissions().add(defaultPermission);
 
         // Save everything
         Database.getStore().save(user);
