@@ -20,6 +20,10 @@ import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
 public class CommandsUserPlugin extends TwasiUserPlugin {
 
+    /**
+     * Installs the plugin, adds the default permissions.
+     * @param e A TwasiInstallEvent
+     */
     @Override
     public void onInstall(TwasiInstallEvent e) {
         // Get the user we are installing for
@@ -33,6 +37,10 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         TwasiLogger.log.debug(prefix + " Commands installed successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
+    /**
+     * Uninstalls the plugin, removes all permissions objects with the name "commands".
+     * @param e A TwasiUninstallEvent
+     */
     @Override
     public void onUninstall(TwasiUninstallEvent e) {
         // Get the user we are uninstalling for
@@ -48,6 +56,11 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         TwasiLogger.log.debug(prefix + " Commands uninstalled successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
+    /**
+     * Handles a command event.
+     * This handles command creation, editing and deletion, and can also provide a list of all commands.
+     * @param e A TwasiCommandEvent
+     */
     @Override
     public void onCommand(TwasiCommandEvent e) {
         User user = getTwasiInterface().getStreamer().getUser();
@@ -105,7 +118,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
             }
         }
 
-        // If the command is add
+        // If the command is delete
         if (command.getCommandName().equalsIgnoreCase("delete")) {
             if (user.hasPermission(command.getSender(), "commands.delete")) {
                 // Check length
@@ -153,6 +166,10 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         }
     }
 
+    /**
+     * Handles the execution of custom commands.
+     * @param e A TwasiMessageEvent
+     */
     @Override
     public void onMessage(TwasiMessageEvent e) {
         User user = getTwasiInterface().getStreamer().getUser();

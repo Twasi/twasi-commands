@@ -7,16 +7,13 @@ import net.twasi.core.database.models.permissions.PermissionEntityType;
 import net.twasi.core.database.models.permissions.PermissionGroups;
 import net.twasi.core.database.models.permissions.Permissions;
 import net.twasi.core.logger.TwasiLogger;
+import net.twasi.core.plugin.api.TwasiUserPlugin;
 import net.twasiplugin.commands.web.CommandHandler;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class CommandsPlugin extends TwasiPlugin {
-
-    static List<String> permissionKeys = Arrays.asList("commands.add", "commands.edit", "commands.delete", "commands.list");
-
     static Permissions defaultPermission = new Permissions(
             Collections.singletonList(
                     new PermissionEntity(
@@ -51,7 +48,7 @@ public class CommandsPlugin extends TwasiPlugin {
     }
 
     @Override
-    public Class getUserPluginClass() {
+    public Class<? extends TwasiUserPlugin> getUserPluginClass() {
         return CommandsUserPlugin.class;
     }
 }

@@ -9,6 +9,12 @@ import java.util.List;
 
 public class CommandStore {
 
+    /**
+     * Gets a command by a user and command name
+     * @param user the user to search the command for (twitch channel)
+     * @param name the name of the command
+     * @return the command if found, null otherwise
+     */
     static CustomCommand getCommandByName(User user, String name) {
         Query<CustomCommand> q = Database.getStore().createQuery(CustomCommand.class);
         List<CustomCommand> command = q
@@ -21,6 +27,13 @@ public class CommandStore {
         return command.get(0);
     }
 
+    /**
+     * Creates a command for a user
+     * @param user the user to create the command for (twitch channel)
+     * @param name the name of the command to create
+     * @param content the content of the new command
+     * @return true if the command was created, false otherwise
+     */
     static boolean createCommand(User user, String name, String content) {
         if (getCommandByName(user, name) == null) {
             CustomCommand command = new CustomCommand(user, name.toLowerCase(), content);
@@ -30,6 +43,13 @@ public class CommandStore {
         return false;
     }
 
+    /**
+     * Changes a command for a user
+     * @param user the user to change the command for (twitch channel)
+     * @param name the name of the command
+     * @param newContent the new content of the command
+     * @return true if the command was updated, false otherwise
+     */
     static boolean editCommand(User user, String name, String newContent) {
         CustomCommand command = getCommandByName(user, name.toLowerCase());
 
@@ -42,6 +62,12 @@ public class CommandStore {
         return true;
     }
 
+    /**
+     * Delets a command by a user and name
+     * @param user the user to delete the command for (twitch channel)
+     * @param name the name of the command
+     * @return true if the command was deleted, false otherwise
+     */
     static boolean deleteCommand(User user, String name) {
         CustomCommand command = getCommandByName(user, name.toLowerCase());
 

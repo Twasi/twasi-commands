@@ -8,19 +8,40 @@ import org.mongodb.morphia.annotations.Reference;
 
 @Entity(value = "customCommands", noClassnameStored = true)
 public class CustomCommand {
+    /**
+     * Unique ID of the command
+     */
     @Id
     private ObjectId id;
 
+    /**
+     * Reference to the user the command belongs to
+     */
     @Reference
     private User user;
 
+    /**
+     * The name of the command
+     */
     private String name;
 
+    /**
+     * The content of the command.
+     */
     private String content;
 
+    /**
+     * Creates an empty CustomCommand. Used by the database.
+     */
     public CustomCommand() {}
 
-    public CustomCommand(User user, String name, String content) {
+    /**
+     * Creates a new CustomCommand by user, name and content
+     * @param user
+     * @param name
+     * @param content
+     */
+    CustomCommand(User user, String name, String content) {
         this.user = user;
         this.name = name;
         this.content = content;
