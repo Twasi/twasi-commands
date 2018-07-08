@@ -1,8 +1,6 @@
 package net.twasiplugin.commands;
 
-import net.twasi.core.database.Database;
 import net.twasi.core.database.models.User;
-import net.twasi.core.database.models.permissions.Permissions;
 import net.twasi.core.logger.TwasiLogger;
 import net.twasi.core.models.Message.TwasiCommand;
 import net.twasi.core.models.Message.TwasiMessage;
@@ -10,12 +8,11 @@ import net.twasi.core.plugin.api.TwasiUserPlugin;
 import net.twasi.core.plugin.api.events.TwasiCommandEvent;
 import net.twasi.core.plugin.api.events.TwasiInstallEvent;
 import net.twasi.core.plugin.api.events.TwasiMessageEvent;
-import net.twasi.core.plugin.api.events.TwasiUninstallEvent;
+import net.twasi.core.services.ServiceRegistry;
+import net.twasi.core.services.providers.DataService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static net.twasiplugin.commands.CommandsPlugin.defaultPermission;
 import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
 public class CommandsUserPlugin extends TwasiUserPlugin {
@@ -26,14 +23,9 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
      */
     @Override
     public void onInstall(TwasiInstallEvent e) {
-        // Get the user we are installing for
-        User user = getTwasiInterface().getStreamer().getUser();
+        e.getDefaultGroup().addKey("commands.user.*");
+        e.getModeratorsGroup().addKey("commands.mod.*");
 
-        // Add the default permission
-        user.getPermissions().add(defaultPermission);
-
-        // Save everything
-        Database.getStore().save(user);
         TwasiLogger.log.debug(prefix + " Commands installed successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
@@ -42,17 +34,10 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
      * @param e A TwasiUninstallEvent
      */
     @Override
-    public void onUninstall(TwasiUninstallEvent e) {
-        // Get the user we are uninstalling for
-        User user = getTwasiInterface().getStreamer().getUser();
+    public void onUninstall(TwasiInstallEvent e) {
+        e.getDefaultGroup().removeKey("commands.user.*");
+        e.getModeratorsGroup().removeKey("commands.mod.*");
 
-        List<Permissions> filteredPermissions = user.getPermissions().stream().filter(perm -> !perm.getName().equalsIgnoreCase("commands")).collect(Collectors.toList());
-
-        // Set our removed permissions back to the user
-        user.setPermissions(filteredPermissions);
-
-        // Save everything
-        Database.getStore().save(user);
         TwasiLogger.log.debug(prefix + " Commands uninstalled successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
@@ -68,7 +53,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         // If the command is add
         if (command.getCommandName().equalsIgnoreCase("add")) {
-            if (user.hasPermission(command.getSender(), "commands.add")) {
+            if (user.hasPermission(command.getSender(), "commands.mod.add")) {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
@@ -83,7 +68,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command already exists notify the user
-                if (CommandStore.createCommand(user, name, content)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "add.successful", name));
                 } else {
@@ -94,7 +79,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         // If the command is edit
         if (command.getCommandName().equalsIgnoreCase("edit")) {
-            if (user.hasPermission(command.getSender(), "commands.edit")) {
+            if (user.hasPermission(command.getSender(), "commands.mod.edit")) {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
@@ -109,7 +94,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command doesnt exist notify the user
-                if (CommandStore.editCommand(user, name, content)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommand(user, name, content)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "edit.successful", name));
                 } else {
@@ -120,7 +105,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         // If the command is delete
         if (command.getCommandName().equalsIgnoreCase("delete")) {
-            if (user.hasPermission(command.getSender(), "commands.delete")) {
+            if (user.hasPermission(command.getSender(), "commands.mod.delete")) {
                 // Check length
                 if (command.getMessage().split(" ", 2).length != 2) {
                     // Reply with instructions
@@ -134,7 +119,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String name = splitted[1];
 
                 // If the command doesn't exist
-                if (CommandStore.deleteCommand(user, name)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommand(user, name)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "delete.successful", name));
                 } else {
@@ -144,8 +129,8 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         }
 
         if (command.getCommandName().equalsIgnoreCase("commands")) {
-            if (user.hasPermission(command.getSender(), "commands.list")) {
-                List<CustomCommand> commands = CommandStore.getAllCommands(user);
+            if (user.hasPermission(command.getSender(), "commands.user.list")) {
+                List<CustomCommand> commands = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getAllCommands(user);
                 if (commands == null) {
                     command.reply(getTranslations().getTranslation(user, "commands.noneAvailable"));
                 } else {
@@ -178,7 +163,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         String[] splitted = msg.getMessage().split(" ");
         String name = splitted[0];
 
-        CustomCommand command = CommandStore.getCommandByName(user, name);
+        CustomCommand command = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
 
         if (command != null) {
             msg.reply(command.getContent());

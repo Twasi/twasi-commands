@@ -17,3 +17,9 @@ commands:
   - edit
   - delete
   - commands
+
+permissions:
+  - commands.mod.add
+  - commands.mod.edit
+  - commands.mod.delete
+  - commands.user.list

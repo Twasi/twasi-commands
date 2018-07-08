@@ -1,13 +1,13 @@
 package net.twasiplugin.commands;
 
-import net.twasi.core.database.Database;
+import net.twasi.core.database.lib.Repository;
 import net.twasi.core.database.models.User;
 import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandStore {
+public class CommandRepository extends Repository<CustomCommand> {
 
     /**
      * Gets a command by a user and command name
@@ -15,8 +15,8 @@ public class CommandStore {
      * @param name the name of the command
      * @return the command if found, null otherwise
      */
-    static CustomCommand getCommandByName(User user, String name) {
-        Query<CustomCommand> q = Database.getStore().createQuery(CustomCommand.class);
+    CustomCommand getCommandByName(User user, String name) {
+        Query<CustomCommand> q = store.createQuery(CustomCommand.class);
         List<CustomCommand> command = q
                 .field("name").equal(name.toLowerCase())
                 .field("user").equal(user)
@@ -34,10 +34,10 @@ public class CommandStore {
      * @param content the content of the new command
      * @return true if the command was created, false otherwise
      */
-    static boolean createCommand(User user, String name, String content) {
+    boolean createCommand(User user, String name, String content) {
         if (getCommandByName(user, name) == null) {
             CustomCommand command = new CustomCommand(user, name.toLowerCase(), content);
-            Database.getStore().save(command);
+            store.save(command);
             return true;
         }
         return false;
@@ -50,7 +50,7 @@ public class CommandStore {
      * @param newContent the new content of the command
      * @return true if the command was updated, false otherwise
      */
-    static boolean editCommand(User user, String name, String newContent) {
+    boolean editCommand(User user, String name, String newContent) {
         CustomCommand command = getCommandByName(user, name.toLowerCase());
 
         if (command == null) {
@@ -58,7 +58,7 @@ public class CommandStore {
         }
 
         command.setContent(newContent);
-        Database.getStore().save(command);
+        store.save(command);
         return true;
     }
 
@@ -68,19 +68,19 @@ public class CommandStore {
      * @param name the name of the command
      * @return true if the command was deleted, false otherwise
      */
-    static boolean deleteCommand(User user, String name) {
+    boolean deleteCommand(User user, String name) {
         CustomCommand command = getCommandByName(user, name.toLowerCase());
 
         if (command == null) {
             return false;
         }
 
-        Database.getStore().delete(command);
+        store.delete(command);
         return true;
     }
 
-    public static List<CustomCommand> getAllCommands(User user) {
-        List<CustomCommand> commands = Database.getStore().createQuery(CustomCommand.class)
+    public List<CustomCommand> getAllCommands(User user) {
+        List<CustomCommand> commands = store.createQuery(CustomCommand.class)
                 .field("user").equal(user).asList();
         if (commands.size() == 0) {
             return new ArrayList<>();
