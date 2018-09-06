@@ -1,4 +1,4 @@
-name: commands
+name: Commands
 main: net.twasiplugin.commands.CommandsPlugin
 author: Twasi Team
 description: Lets you create your own commands. Please use '!help commands' to get an introduction.
@@ -23,3 +23,18 @@ permissions:
   - commands.mod.edit
   - commands.mod.delete
   - commands.user.list
+
+api: |
+  type Commands {
+    commands: [TwasiCommand],
+    update(id: String, name: String, content: String): TwasiCommand,
+    single(id: String): TwasiCommand,
+    delete(id: String): TwasiCommand,
+    create(name: String, content: String): TwasiCommand
+  }
+
+  type TwasiCommand {
+    id: String,
+    name: String,
+    content: String
+  }

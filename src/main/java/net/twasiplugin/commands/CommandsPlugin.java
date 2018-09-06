@@ -1,17 +1,12 @@
 package net.twasiplugin.commands;
 
+import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 import net.twasi.core.plugin.TwasiPlugin;
-import net.twasi.core.database.models.permissions.PermissionEntity;
-import net.twasi.core.database.models.permissions.PermissionEntityType;
-import net.twasi.core.database.models.permissions.PermissionGroups;
-import net.twasi.core.database.models.permissions.Permissions;
 import net.twasi.core.logger.TwasiLogger;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DatabaseService;
-
-import java.util.Arrays;
-import java.util.Collections;
+import net.twasiplugin.commands.web.CommandResolver;
 
 public class CommandsPlugin extends TwasiPlugin {
     static String prefix = "[COMMANDS] ";
@@ -38,5 +33,10 @@ public class CommandsPlugin extends TwasiPlugin {
     @Override
     public Class<? extends TwasiUserPlugin> getUserPluginClass() {
         return CommandsUserPlugin.class;
+    }
+
+    @Override
+    public GraphQLQueryResolver getGraphQLResolver() {
+        return new CommandResolver();
     }
 }
