@@ -71,4 +71,6 @@ public class CustomCommand extends BaseEntity {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public User getUser() { return user; }
 }

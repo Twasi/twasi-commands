@@ -1,6 +1,7 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
+import net.twasiplugin.commands.CustomCommand;
 
 public class CommandDTO {
     private User user;
@@ -18,6 +19,13 @@ public class CommandDTO {
         this.id = id;
         this.name = name;
         this.content = content;
+    }
+
+    public CommandDTO(User user, CustomCommand command) {
+        this.user = user;
+        this.id = command.getId().toString();
+        this.name = command.getName();
+        this.content = command.getContent();
     }
 
     public String getId() {

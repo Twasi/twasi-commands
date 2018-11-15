@@ -68,7 +68,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command already exists notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content) == null) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "add.successful", name));
                 } else {
@@ -94,7 +94,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command doesnt exist notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommand(user, name, content)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "edit.successful", name));
                 } else {
@@ -119,7 +119,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String name = splitted[1];
 
                 // If the command doesn't exist
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommand(user, name)) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommandByName(user, name)) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "delete.successful", name));
                 } else {

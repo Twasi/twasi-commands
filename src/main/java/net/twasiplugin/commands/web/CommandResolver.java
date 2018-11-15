@@ -16,13 +16,12 @@ public class CommandResolver extends TwasiCustomResolver {
         if (user == null) {
             return null;
         }
-        return null;
 
-        // List<CustomCommand> commands = repo.getAllCommands(user);
+        if (!user.getInstalledPlugins().contains("Commands")) {
+            return null;
+        }
 
-        /* return commands.stream()
-                .map(cmd -> new CommandDTO(user, cmd.getId().toString(), cmd.getName(), cmd.getContent()))
-                .collect(Collectors.toList()); */
+        return new CommandPluginDTO(repo, user);
     }
 
 }
