@@ -70,9 +70,9 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // If the command already exists notify the user
                 if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content) == null) {
                     // Reply to the user
-                    command.reply(getTranslations().getTranslation(user, "add.successful", name));
-                } else {
                     command.reply(getTranslations().getTranslation(user, "add.alreadyExist", name));
+                } else {
+                    command.reply(getTranslations().getTranslation(user, "add.successful", name));
                 }
             }
         }
