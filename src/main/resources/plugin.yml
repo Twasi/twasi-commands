@@ -22,15 +22,16 @@ permissions:
 api: |
   type Commands {
     commands: [TwasiCommand],
-    update(id: String, name: String, content: String): TwasiCommand,
+    update(id: String, name: String, content: String, cooldown: Number): TwasiCommand,
     single(id: String): TwasiCommand,
     delete(id: String): TwasiCommand,
-    create(name: String, content: String): TwasiCommand
+    create(name: String, content: String, cooldown: Number): TwasiCommand
   }
 
   type TwasiCommand {
     id: String,
     name: String,
     content: String,
-    uses: Number
+    uses: Number,
+    cooldown: Number
   }

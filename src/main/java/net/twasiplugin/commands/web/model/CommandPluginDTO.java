@@ -20,8 +20,8 @@ public class CommandPluginDTO {
         return repo.getAllCommands(user).stream().map(cmd -> new CommandDTO(user, cmd)).collect(Collectors.toList());
     }
 
-    public CommandDTO update(String id, String name, String content) {
-        if (repo.editCommand(user, id, name, content)) {
+    public CommandDTO update(String id, String name, String content, int cooldown) {
+        if (repo.editCommand(user, id, name, content, cooldown)) {
             return new CommandDTO(user, repo.getCommandById(user, id));
         }
         return null;
@@ -40,8 +40,8 @@ public class CommandPluginDTO {
         return null;
     }
 
-    public CommandDTO create(String name, String content) {
-        String id = repo.createCommand(user, name, content);
+    public CommandDTO create(String name, String content, int cooldown) {
+        String id = repo.createCommand(user, name, content, cooldown);
 
         if (id == null) {
             return null;

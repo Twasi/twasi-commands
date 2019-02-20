@@ -12,13 +12,15 @@ import net.twasi.core.plugin.api.events.TwasiMessageEvent;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
 import net.twasiplugin.commands.variables.UsesVariable;
+import org.bson.types.ObjectId;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
 public class CommandsUserPlugin extends TwasiUserPlugin {
+
+    private Map<ObjectId, Date> cooldowns = new HashMap<>();
 
     /**
      * Installs the plugin, adds the default permissions.
@@ -71,7 +73,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command already exists notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content) == null) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0) == null) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "add.alreadyExist", name));
                 } else {
@@ -96,8 +98,11 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String name = splitted[1];
                 String content = splitted[2];
 
-                // If the command doesnt exist notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content)) {
+                // We can't change cooldown of commands in chat so just don't change it.
+                CustomCommand customCommand = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
+
+                // If the command doesn't exist notify the user
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown())) {
                     // Reply to the user
                     command.reply(getTranslations().getTranslation(user, "edit.successful", name));
                 } else {
@@ -169,10 +174,25 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         CustomCommand command = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
 
         if (command != null) {
+            // Is it on cooldown?
+            if (cooldowns.containsKey(command.getId())) {
+                // if the earliest next use is in the future, skip it. It's on cooldown.
+                if (cooldowns.get(command.getId()).after(new Date())) {
+                    return;
+                }
+            }
+
             msg.reply(command.getContent());
 
             // increment uses
             command.setUses(command.getUses() + 1);
+
+            // apply cooldown, if any
+            if (command.getCooldown() != 0) {
+                Date now = new Date();
+                Date earliestNextUse = new Date(now.getTime() + command.getCooldown() * 1000);
+                cooldowns.put(command.getId(), earliestNextUse);
+            }
 
             ServiceRegistry.get(DataService.class).get(CommandRepository.class).commit(command);
         }

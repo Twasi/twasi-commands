@@ -37,6 +37,11 @@ public class CustomCommand extends BaseEntity {
     private int uses;
 
     /**
+     * Seconds of cooldown
+     */
+    private int cooldown;
+
+    /**
      * Creates an empty CustomCommand. Used by the database.
      */
     public CustomCommand() {}
@@ -47,11 +52,12 @@ public class CustomCommand extends BaseEntity {
      * @param name
      * @param content
      */
-    CustomCommand(User user, String name, String content) {
+    CustomCommand(User user, String name, String content, int cooldown) {
         this.user = user;
         this.name = name;
         this.content = content;
         this.uses = 0;
+        this.cooldown = cooldown;
     }
 
     public ObjectId getId() {
@@ -86,5 +92,13 @@ public class CustomCommand extends BaseEntity {
 
     public void setUses(int uses) {
         this.uses = uses;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
     }
 }

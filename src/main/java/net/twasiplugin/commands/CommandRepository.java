@@ -45,11 +45,12 @@ public class CommandRepository extends Repository<CustomCommand> {
      * @param user the user to create the command for (twitch channel)
      * @param name the name of the command to create
      * @param content the content of the new command
+     * @param cooldown the cooldown of the command in seconds
      * @return the id of the created command on success, null otherwise
      */
-    public String createCommand(User user, String name, String content) {
+    public String createCommand(User user, String name, String content, int cooldown) {
         if (getCommandByName(user, name) == null) {
-            CustomCommand command = new CustomCommand(user, name.toLowerCase(), content);
+            CustomCommand command = new CustomCommand(user, name.toLowerCase(), content, cooldown);
             store.save(command);
             return getCommandByName(user, name).getId().toString();
         }
@@ -62,9 +63,10 @@ public class CommandRepository extends Repository<CustomCommand> {
      * @param id the id of the command
      * @param name the (new) name of the command
      * @param content the (new) content of the command
+     * @param cooldown the cooldown of the command in seconds
      * @return true if the command was updated, false otherwise
      */
-    public boolean editCommand(User user, String id, String name, String content) {
+    public boolean editCommand(User user, String id, String name, String content, int cooldown) {
         CustomCommand command = getCommandById(user, id);
 
         if (command == null) {
@@ -81,13 +83,14 @@ public class CommandRepository extends Repository<CustomCommand> {
 
         command.setContent(content);
         command.setName(name);
+        command.setCooldown(cooldown);
 
         store.save(command);
         return true;
     }
-    public boolean editCommandByName(User user, String name, String content) {
+    public boolean editCommandByName(User user, String name, String content, int cooldown) {
         CustomCommand cmd = getCommandByName(user, name);
-        return editCommand(user, cmd.getId().toString(), name, content);
+        return editCommand(user, cmd.getId().toString(), name, content, cooldown);
     }
 
     /**
