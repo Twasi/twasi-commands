@@ -32,6 +32,11 @@ public class CustomCommand extends BaseEntity {
     private String content;
 
     /**
+     * Number of uses
+     */
+    private int uses;
+
+    /**
      * Creates an empty CustomCommand. Used by the database.
      */
     public CustomCommand() {}
@@ -46,6 +51,7 @@ public class CustomCommand extends BaseEntity {
         this.user = user;
         this.name = name;
         this.content = content;
+        this.uses = 0;
     }
 
     public ObjectId getId() {
@@ -73,4 +79,12 @@ public class CustomCommand extends BaseEntity {
     }
 
     public User getUser() { return user; }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
+    }
 }

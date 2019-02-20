@@ -9,16 +9,18 @@ public class CommandDTO {
     private String id;
     private String name;
     private String content;
+    private int uses;
 
     public CommandDTO(User user) {
         this.user = new User();
     }
 
-    public CommandDTO(User user, String id, String name, String content) {
+    public CommandDTO(User user, String id, String name, String content, int uses) {
         this.user = user;
         this.id = id;
         this.name = name;
         this.content = content;
+        this.uses = uses;
     }
 
     public CommandDTO(User user, CustomCommand command) {
@@ -26,6 +28,7 @@ public class CommandDTO {
         this.id = command.getId().toString();
         this.name = command.getName();
         this.content = command.getContent();
+        this.uses = command.getUses();
     }
 
     public String getId() {
@@ -50,5 +53,13 @@ public class CommandDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
     }
 }

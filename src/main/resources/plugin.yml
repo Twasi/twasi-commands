@@ -5,13 +5,8 @@ description: Lets you create your own commands. Please use '!help commands' to g
 helpText: Use !add to add a command, !edit to edit one or !delete to remove one.
 version: 1.0
 
-# We need to check for a custom command
 messageHandler: true
 
-# Call our plugins Command Handler if !hello is executed.
-# You have to register all your plugins commands here
-# if you want to get all messages, please use onMessage.
-# Please only use lowercase.
 commands:
   - add
   - edit
@@ -36,5 +31,6 @@ api: |
   type TwasiCommand {
     id: String,
     name: String,
-    content: String
+    content: String,
+    uses: Number
   }

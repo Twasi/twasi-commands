@@ -5,12 +5,15 @@ import net.twasi.core.logger.TwasiLogger;
 import net.twasi.core.models.Message.TwasiCommand;
 import net.twasi.core.models.Message.TwasiMessage;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
+import net.twasi.core.plugin.api.TwasiVariable;
 import net.twasi.core.plugin.api.events.TwasiCommandEvent;
 import net.twasi.core.plugin.api.events.TwasiInstallEvent;
 import net.twasi.core.plugin.api.events.TwasiMessageEvent;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
+import net.twasiplugin.commands.variables.UsesVariable;
 
+import java.util.Collections;
 import java.util.List;
 
 import static net.twasiplugin.commands.CommandsPlugin.prefix;
@@ -167,7 +170,16 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         if (command != null) {
             msg.reply(command.getContent());
+
+            // increment uses
+            command.setUses(command.getUses() + 1);
+
+            ServiceRegistry.get(DataService.class).get(CommandRepository.class).commit(command);
         }
     }
 
+    @Override
+    public List<TwasiVariable> getVariables() {
+        return Collections.singletonList(new UsesVariable(this));
+    }
 }
