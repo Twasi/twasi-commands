@@ -62,7 +62,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply(getTranslations().getTranslation(user, "add.usage"));
+                    command.reply(getTranslation( "add.usage"));
                     return;
                 }
 
@@ -75,9 +75,9 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // If the command already exists notify the user
                 if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0) == null) {
                     // Reply to the user
-                    command.reply(getTranslations().getTranslation(user, "add.alreadyExist", name));
+                    command.reply(getTranslation( "add.alreadyExist", name));
                 } else {
-                    command.reply(getTranslations().getTranslation(user, "add.successful", name));
+                    command.reply(getTranslation( "add.successful", name));
                 }
             }
         }
@@ -88,7 +88,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply(getTranslations().getTranslation(user, "edit.usage"));
+                    command.reply(getTranslation( "edit.usage"));
                     return;
                 }
 
@@ -104,9 +104,9 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // If the command doesn't exist notify the user
                 if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown())) {
                     // Reply to the user
-                    command.reply(getTranslations().getTranslation(user, "edit.successful", name));
+                    command.reply(getTranslation( "edit.successful", name));
                 } else {
-                    command.reply(getTranslations().getTranslation(user, "edit.doesntExist", name));
+                    command.reply(getTranslation( "edit.doesntExist", name));
                 }
             }
         }
@@ -117,7 +117,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 2).length != 2) {
                     // Reply with instructions
-                    command.reply(getTranslations().getTranslation(user, "delete.usage"));
+                    command.reply(getTranslation("delete.usage"));
                     return;
                 }
 
@@ -129,9 +129,9 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // If the command doesn't exist
                 if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommandByName(user, name)) {
                     // Reply to the user
-                    command.reply(getTranslations().getTranslation(user, "delete.successful", name));
+                    command.reply(getTranslation( "delete.successful", name));
                 } else {
-                    command.reply(getTranslations().getTranslation(user, "delete.doesntExist", name));
+                    command.reply(getTranslation("delete.doesntExist", name));
                 }
             }
         }
@@ -140,7 +140,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
             if (user.hasPermission(command.getSender(), "commands.user.list")) {
                 List<CustomCommand> commands = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getAllCommands(user);
                 if (commands == null) {
-                    command.reply(getTranslations().getTranslation(user, "commands.noneAvailable"));
+                    command.reply(getTranslation( "commands.noneAvailable"));
                 } else {
                     StringBuilder builder = new StringBuilder();
                     builder.append("[");
