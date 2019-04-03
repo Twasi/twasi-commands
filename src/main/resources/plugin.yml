@@ -10,7 +10,7 @@ messageHandler: true
 commands:
   - add
   - edit
-  - delete
+  - del
   - commands
 
 permissions:

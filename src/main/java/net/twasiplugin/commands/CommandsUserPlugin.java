@@ -112,7 +112,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         }
 
         // If the command is delete
-        if (command.getCommandName().equalsIgnoreCase("delete")) {
+        if (command.getCommandName().equalsIgnoreCase("del")) {
             if (user.hasPermission(command.getSender(), "commands.mod.delete")) {
                 // Check length
                 if (command.getMessage().split(" ", 2).length != 2) {
