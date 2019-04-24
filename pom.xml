@@ -34,6 +34,7 @@
             <groupId>net.twasi</groupId>
             <artifactId>TwasiCore</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
