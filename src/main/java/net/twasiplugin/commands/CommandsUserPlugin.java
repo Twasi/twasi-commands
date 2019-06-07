@@ -2,19 +2,25 @@ package net.twasiplugin.commands;
 
 import net.twasi.core.database.models.User;
 import net.twasi.core.logger.TwasiLogger;
-import net.twasi.core.models.Message.TwasiCommand;
 import net.twasi.core.models.Message.TwasiMessage;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
-import net.twasi.core.plugin.api.TwasiVariable;
-import net.twasi.core.plugin.api.events.TwasiCommandEvent;
+import net.twasi.core.plugin.api.events.TwasiEnableEvent;
 import net.twasi.core.plugin.api.events.TwasiInstallEvent;
 import net.twasi.core.plugin.api.events.TwasiMessageEvent;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
+import net.twasiplugin.commands.commands.AddCommand;
+import net.twasiplugin.commands.commands.DelCommand;
+import net.twasiplugin.commands.commands.EditCommand;
+import net.twasiplugin.commands.commands.ListCommand;
+import net.twasiplugin.commands.database.CommandRepository;
+import net.twasiplugin.commands.database.CustomCommand;
 import net.twasiplugin.commands.variables.UsesVariable;
 import org.bson.types.ObjectId;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
@@ -46,117 +52,14 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
         TwasiLogger.log.debug(prefix + " Commands uninstalled successfully for " + getTwasiInterface().getStreamer().getUser().getTwitchAccount().getUserName());
     }
 
-    /**
-     * Handles a command event.
-     * This handles command creation, editing and deletion, and can also provide a list of all commands.
-     * @param e A TwasiCommandEvent
-     */
     @Override
-    public void onCommand(TwasiCommandEvent e) {
-        User user = getTwasiInterface().getStreamer().getUser();
-        TwasiCommand command = e.getCommand();
+    public void onEnable(TwasiEnableEvent e) {
+        registerCommand(AddCommand.class);
+        registerCommand(DelCommand.class);
+        registerCommand(EditCommand.class);
+        registerCommand(ListCommand.class);
 
-        // If the command is add
-        if (command.getCommandName().equalsIgnoreCase("add")) {
-            if (user.hasPermission(command.getSender(), "commands.mod.add")) {
-                // Check length
-                if (command.getMessage().split(" ", 3).length != 3) {
-                    // Reply with instructions
-                    command.reply(getTranslation( "add.usage"));
-                    return;
-                }
-
-                String[] splitted = command.getMessage().split(" ", 3);
-
-                // Map to our strings
-                String name = splitted[1];
-                String content = splitted[2];
-
-                // If the command already exists notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0) == null) {
-                    // Reply to the user
-                    command.reply(getTranslation( "add.alreadyExist", name));
-                } else {
-                    command.reply(getTranslation( "add.successful", name));
-                }
-            }
-        }
-
-        // If the command is edit
-        if (command.getCommandName().equalsIgnoreCase("edit")) {
-            if (user.hasPermission(command.getSender(), "commands.mod.edit")) {
-                // Check length
-                if (command.getMessage().split(" ", 3).length != 3) {
-                    // Reply with instructions
-                    command.reply(getTranslation( "edit.usage"));
-                    return;
-                }
-
-                String[] splitted = command.getMessage().split(" ", 3);
-
-                // Map to our strings
-                String name = splitted[1];
-                String content = splitted[2];
-
-                // We can't change cooldown of commands in chat so just don't change it.
-                CustomCommand customCommand = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
-
-                // If the command doesn't exist notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown())) {
-                    // Reply to the user
-                    command.reply(getTranslation( "edit.successful", name));
-                } else {
-                    command.reply(getTranslation( "edit.doesntExist", name));
-                }
-            }
-        }
-
-        // If the command is delete
-        if (command.getCommandName().equalsIgnoreCase("del")) {
-            if (user.hasPermission(command.getSender(), "commands.mod.delete")) {
-                // Check length
-                if (command.getMessage().split(" ", 2).length != 2) {
-                    // Reply with instructions
-                    command.reply(getTranslation("delete.usage"));
-                    return;
-                }
-
-                String[] splitted = command.getMessage().split(" ", 3);
-
-                // Map to our strings
-                String name = splitted[1];
-
-                // If the command doesn't exist
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommandByName(user, name)) {
-                    // Reply to the user
-                    command.reply(getTranslation( "delete.successful", name));
-                } else {
-                    command.reply(getTranslation("delete.doesntExist", name));
-                }
-            }
-        }
-
-        if (command.getCommandName().equalsIgnoreCase("commands")) {
-            if (user.hasPermission(command.getSender(), "commands.user.list")) {
-                List<CustomCommand> commands = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getAllCommands(user);
-                if (commands == null) {
-                    command.reply(getTranslation( "commands.noneAvailable"));
-                } else {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("[");
-
-                    String prefix = "";
-                    for (CustomCommand cmd : commands) {
-                        builder.append(prefix);
-                        builder.append(cmd.getName());
-                        prefix = ", ";
-                    }
-
-                    builder.append("]");
-                    command.reply(getTranslation("commands.available", builder.toString()));
-                }
-            }
-        }
+        registerVariable(UsesVariable.class);
     }
 
     /**
@@ -196,10 +99,5 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
             ServiceRegistry.get(DataService.class).get(CommandRepository.class).commit(command);
         }
-    }
-
-    @Override
-    public List<TwasiVariable> getVariables() {
-        return Collections.singletonList(new UsesVariable(this));
     }
 }

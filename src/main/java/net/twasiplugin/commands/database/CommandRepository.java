@@ -1,4 +1,4 @@
-package net.twasiplugin.commands;
+package net.twasiplugin.commands.database;
 
 import net.twasi.core.database.lib.Repository;
 import net.twasi.core.database.models.User;
@@ -11,10 +11,10 @@ import java.util.List;
 public class CommandRepository extends Repository<CustomCommand> {
 
     /**
-     * Gets a command by a user and command name
-     * @param user the user to search the command for (twitch channel)
-     * @param name the name of the command
-     * @return the command if found, null otherwise
+     * Gets a commands by a user and commands name
+     * @param user the user to search the commands for (twitch channel)
+     * @param name the name of the commands
+     * @return the commands if found, null otherwise
      */
     public CustomCommand getCommandByName(User user, String name) {
         Query<CustomCommand> q = store.createQuery(CustomCommand.class);
@@ -41,12 +41,12 @@ public class CommandRepository extends Repository<CustomCommand> {
     }
 
     /**
-     * Creates a command for a user
-     * @param user the user to create the command for (twitch channel)
-     * @param name the name of the command to create
-     * @param content the content of the new command
-     * @param cooldown the cooldown of the command in seconds
-     * @return the id of the created command on success, null otherwise
+     * Creates a commands for a user
+     * @param user the user to create the commands for (twitch channel)
+     * @param name the name of the commands to create
+     * @param content the content of the new commands
+     * @param cooldown the cooldown of the commands in seconds
+     * @return the id of the created commands on success, null otherwise
      */
     public String createCommand(User user, String name, String content, int cooldown) {
         if (getCommandByName(user, name) == null) {
@@ -58,13 +58,13 @@ public class CommandRepository extends Repository<CustomCommand> {
     }
 
     /**
-     * Changes a command for a user
-     * @param user the user to change the command for (twitch channel)
-     * @param id the id of the command
-     * @param name the (new) name of the command
-     * @param content the (new) content of the command
-     * @param cooldown the cooldown of the command in seconds
-     * @return true if the command was updated, false otherwise
+     * Changes a commands for a user
+     * @param user the user to change the commands for (twitch channel)
+     * @param id the id of the commands
+     * @param name the (new) name of the commands
+     * @param content the (new) content of the commands
+     * @param cooldown the cooldown of the commands in seconds
+     * @return true if the commands was updated, false otherwise
      */
     public boolean editCommand(User user, String id, String name, String content, int cooldown) {
         CustomCommand command = getCommandById(user, id);
@@ -94,10 +94,10 @@ public class CommandRepository extends Repository<CustomCommand> {
     }
 
     /**
-     * Delets a command by a user and id
-     * @param user the user to delete the command for (twitch channel)
-     * @param id the id of the command
-     * @return true if the command was deleted, false otherwise
+     * Delets a commands by a user and id
+     * @param user the user to delete the commands for (twitch channel)
+     * @param id the id of the commands
+     * @return true if the commands was deleted, false otherwise
      */
     public boolean deleteCommand(User user, String id) {
         CustomCommand command = getCommandById(user, id);

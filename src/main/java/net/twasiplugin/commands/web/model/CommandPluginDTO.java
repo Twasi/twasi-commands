@@ -1,8 +1,8 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
-import net.twasiplugin.commands.CommandRepository;
-import net.twasiplugin.commands.CustomCommand;
+import net.twasiplugin.commands.database.CommandRepository;
+import net.twasiplugin.commands.database.CustomCommand;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
-import net.twasiplugin.commands.CustomCommand;
+import net.twasiplugin.commands.database.CustomCommand;
 
 public class CommandDTO {
     private User user;

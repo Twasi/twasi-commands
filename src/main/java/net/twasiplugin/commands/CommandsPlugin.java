@@ -6,6 +6,7 @@ import net.twasi.core.logger.TwasiLogger;
 import net.twasi.core.plugin.api.TwasiUserPlugin;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DatabaseService;
+import net.twasiplugin.commands.database.CustomCommand;
 import net.twasiplugin.commands.web.CommandResolver;
 
 public class CommandsPlugin extends TwasiPlugin {
