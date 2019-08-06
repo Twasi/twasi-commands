@@ -2,6 +2,7 @@ package net.twasiplugin.commands.database;
 
 import net.twasi.core.database.models.BaseEntity;
 import net.twasi.core.database.models.User;
+import net.twasiplugin.commands.CommandAccessLevel;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;

@@ -6,8 +6,8 @@ import net.twasi.core.plugin.api.customcommands.TwasiPluginCommand;
 import net.twasi.core.services.providers.DataService;
 import net.twasi.core.translations.renderer.TranslationRenderer;
 import net.twasiplugin.commands.CommandAccessLevel;
-import net.twasiplugin.commands.CommandRepository;
-import net.twasiplugin.commands.CustomCommand;
+import net.twasiplugin.commands.database.CommandRepository;
+import net.twasiplugin.commands.database.CustomCommand;
 
 public class SetAccessLevelCommand extends TwasiPluginCommand {
 

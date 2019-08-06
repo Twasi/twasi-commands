@@ -7,6 +7,7 @@ import net.twasi.core.plugin.api.customcommands.TwasiPluginCommand;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
 import net.twasi.core.translations.renderer.TranslationRenderer;
+import net.twasiplugin.commands.CommandAccessLevel;
 import net.twasiplugin.commands.database.CommandRepository;
 
 import java.time.Duration;
@@ -61,7 +62,7 @@ public class AddCommand extends TwasiPluginCommand {
         TranslationRenderer renderer = event.getRenderer().bind("name", name);
 
         // If the commands already exists notify the user
-        if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0) == null) {
+        if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0, CommandAccessLevel.VIEWER) == null) {
             // Reply to the user
             event.reply(renderer.render("add.alreadyExist"));
         } else {

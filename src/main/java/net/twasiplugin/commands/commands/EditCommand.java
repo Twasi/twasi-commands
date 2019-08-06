@@ -65,7 +65,7 @@ public class EditCommand extends TwasiPluginCommand {
         CustomCommand customCommand = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
 
         // If the commands doesn't exist notify the user
-        if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown())) {
+        if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown(), customCommand.getAccessLevel())) {
             // Reply to the user
             event.reply(renderer.render("edit.successful"));
         } else {
