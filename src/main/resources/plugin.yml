@@ -12,6 +12,7 @@ commands:
   - edit
   - del
   - commands
+  - setaccess
 
 permissions:
   - commands.mod.add
