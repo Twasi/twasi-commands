@@ -1,4 +1,4 @@
-package net.twasiplugin.commands;
+package net.twasiplugin.commands.database;
 
 import net.twasi.core.database.lib.Repository;
 import net.twasi.core.database.models.User;

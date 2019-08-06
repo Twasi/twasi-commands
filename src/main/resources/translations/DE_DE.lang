@@ -1,17 +1,17 @@
 add.usage=Benutzung: !add [Befehl] [Inhalt] Beispiel für !bot: !add !bot Twasi ist cool!
-add.successful=Der Befehl %s wurde erfolgreich erstellt.
-add.alreadyExist=Der Befehl %s existiert schon.
+add.successful=Der Befehl {name} wurde erfolgreich erstellt.
+add.alreadyExist=Der Befehl {name} existiert schon.
 
 edit.usage=Benutzung: !edit [Befehl] [neuer Inhalt] Beispiel für !bot: !edit !bot Twasi ist der erweiterbarste Bot!
-edit.successful=Der Befehl %s wurde erfolgreich geändert.
-edit.doesntExist=Der Befehl %s existiert nicht.
+edit.successful=Der Befehl {name} wurde erfolgreich geändert.
+edit.doesntExist=Der Befehl {name} existiert nicht.
 
 delete.usage=Benutzung: !delete [Befehl] Beispiel für !bot: !delete !bot
-delete.successful=Der Befehl %s wurde erfolgreich gelöscht.
-delete.doesntExist=De Befehl %s existiert nicht.
+delete.successful=Der Befehl {name} wurde erfolgreich gelöscht.
+delete.doesntExist=Der Befehl {name} existiert nicht.
 
 commands.noneFound=Im moment sind keine Befehle verfügbar. Aber hey, du kannst einen erstellen: !add [Befehl] [Inhalt]
-commands.available=Verfügbare Befehle: %s
+commands.available=Verfügbare Befehle: {commands}
 
 set-access-level.syntax=Benutzung: !setaccess [Befehl] [Level], Verfügbare level (absteigend): Broadcaster, Moderator, VIP, Subscriber, Follower, Viewer
 set-access-level.broadcaster-only={sender.displayName} Das Zugriffslevel dieses Befehls kann nur vom Streamer geändert werden.

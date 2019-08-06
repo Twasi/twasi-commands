@@ -2,7 +2,7 @@ name: Commands
 main: net.twasiplugin.commands.CommandsPlugin
 author: Twasi Team
 description: Lets you create your own commands. Please use '!help commands' to get an introduction.
-helpText: Use !add to add a command, !edit to edit one or !delete to remove one.
+helpText: Use !add to add a commands, !edit to edit one or !delete to remove one.
 version: 1.0
 
 messageHandler: true

@@ -1,4 +1,4 @@
-package net.twasiplugin.commands;
+package net.twasiplugin.commands.database;
 
 import net.twasi.core.database.models.BaseEntity;
 import net.twasi.core.database.models.User;
@@ -10,24 +10,24 @@ import org.mongodb.morphia.annotations.Reference;
 @Entity(value = "customCommands", noClassnameStored = true)
 public class CustomCommand extends BaseEntity {
     /**
-     * Unique ID of the command
+     * Unique ID of the commands
      */
     @Id
     private ObjectId id;
 
     /**
-     * Reference to the user the command belongs to
+     * Reference to the user the commands belongs to
      */
     @Reference
     private User user;
 
     /**
-     * The name of the command
+     * The name of the commands
      */
     private String name;
 
     /**
-     * The content of the command.
+     * The content of the commands.
      */
     private String content;
 

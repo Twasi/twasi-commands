@@ -4,7 +4,7 @@ import net.twasi.core.database.models.User;
 import net.twasi.core.graphql.TwasiCustomResolver;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
-import net.twasiplugin.commands.CommandRepository;
+import net.twasiplugin.commands.database.CommandRepository;
 import net.twasiplugin.commands.web.model.CommandPluginDTO;
 
 public class CommandResolver extends TwasiCustomResolver {

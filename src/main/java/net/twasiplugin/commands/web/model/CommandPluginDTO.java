@@ -1,9 +1,9 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
+import net.twasiplugin.commands.database.CommandRepository;
+import net.twasiplugin.commands.database.CustomCommand;
 import net.twasiplugin.commands.CommandAccessLevel;
-import net.twasiplugin.commands.CommandRepository;
-import net.twasiplugin.commands.CustomCommand;
 
 import java.util.Arrays;
 import java.util.List;
