@@ -46,7 +46,7 @@ public class AddCommand extends TwasiPluginCommand {
     @Override
     protected boolean execute(TwasiCustomCommandEvent event) {
         // Check length
-        if (event.getArgs().size() < 3) {
+        if (event.getArgs().size() < 2) {
             // Reply with instructions
             event.reply(event.getRenderer().render("add.usage"));
             return false;
