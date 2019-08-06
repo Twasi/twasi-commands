@@ -12,3 +12,9 @@ delete.doesntExist=De Befehl %s existiert nicht.
 
 commands.noneFound=Im moment sind keine Befehle verfügbar. Aber hey, du kannst einen erstellen: !add [Befehl] [Inhalt]
 commands.available=Verfügbare Befehle: %s
+
+set-access-level.syntax=Benutzung: !setaccess [Befehl] [Level], Verfügbare level (absteigend): Broadcaster, Moderator, VIP, Subscriber, Follower, Viewer
+set-access-level.broadcaster-only={sender.displayName} Das Zugriffslevel dieses Befehls kann nur vom Streamer geändert werden.
+set-access-level.doesnt-exist=Der Befehl {args.1} existiert nicht.
+set-access-level.success=Das Zugriffslevel des Befehls {command.name} wurde erfolgreich geändert zu {level.name}.
+set-access-level.info=Das aktuelle Zugriffslevel des Befehls {command.name} lautet: {command.accessLevel.name}

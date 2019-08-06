@@ -11,18 +11,20 @@ public class CommandDTO {
     private String content;
     private int uses;
     private int cooldown;
+    private TwasiCommandAccessLevelDTO accessLevel;
 
     public CommandDTO(User user) {
         this.user = new User();
     }
 
-    public CommandDTO(User user, String id, String name, String content, int uses, int cooldown) {
+    public CommandDTO(User user, String id, String name, String content, int uses, int cooldown, TwasiCommandAccessLevelDTO accessLevel) {
         this.user = user;
         this.id = id;
         this.name = name;
         this.content = content;
         this.uses = uses;
         this.cooldown = cooldown;
+        this.accessLevel = accessLevel;
     }
 
     public CommandDTO(User user, CustomCommand command) {
@@ -32,6 +34,7 @@ public class CommandDTO {
         this.content = command.getContent();
         this.uses = command.getUses();
         this.cooldown = command.getCooldown();
+        this.accessLevel = new TwasiCommandAccessLevelDTO(command.getAccessLevel());
     }
 
     public String getId() {
@@ -72,5 +75,9 @@ public class CommandDTO {
 
     public void setCooldown(int cooldown) {
         this.cooldown = cooldown;
+    }
+
+    public TwasiCommandAccessLevelDTO getAccessLevel() {
+        return accessLevel;
     }
 }

@@ -11,6 +11,7 @@ import net.twasi.core.plugin.api.events.TwasiInstallEvent;
 import net.twasi.core.plugin.api.events.TwasiMessageEvent;
 import net.twasi.core.services.ServiceRegistry;
 import net.twasi.core.services.providers.DataService;
+import net.twasiplugin.commands.commands.SetAccessLevelCommand;
 import net.twasiplugin.commands.variables.UsesVariable;
 import org.bson.types.ObjectId;
 
@@ -20,10 +21,16 @@ import static net.twasiplugin.commands.CommandsPlugin.prefix;
 
 public class CommandsUserPlugin extends TwasiUserPlugin {
 
+    public CommandsUserPlugin(){
+        // Register controller-driven commands
+        registerCommand(SetAccessLevelCommand.class);
+    }
+
     private Map<ObjectId, Date> cooldowns = new HashMap<>();
 
     /**
      * Installs the plugin, adds the default permissions.
+     *
      * @param e A TwasiInstallEvent
      */
     @Override
@@ -36,6 +43,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
     /**
      * Uninstalls the plugin, removes all permissions objects with the name "commands".
+     *
      * @param e A TwasiUninstallEvent
      */
     @Override
@@ -49,6 +57,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
     /**
      * Handles a command event.
      * This handles command creation, editing and deletion, and can also provide a list of all commands.
+     *
      * @param e A TwasiCommandEvent
      */
     @Override
@@ -62,7 +71,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply(getTranslation( "add.usage"));
+                    command.reply(getTranslation("add.usage"));
                     return;
                 }
 
@@ -73,11 +82,11 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 String content = splitted[2];
 
                 // If the command already exists notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0) == null) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).createCommand(user, name, content, 0, CommandAccessLevel.VIEWER) == null) {
                     // Reply to the user
-                    command.reply(getTranslation( "add.alreadyExist", name));
+                    command.reply(getTranslation("add.alreadyExist", name));
                 } else {
-                    command.reply(getTranslation( "add.successful", name));
+                    command.reply(getTranslation("add.successful", name));
                 }
             }
         }
@@ -88,7 +97,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // Check length
                 if (command.getMessage().split(" ", 3).length != 3) {
                     // Reply with instructions
-                    command.reply(getTranslation( "edit.usage"));
+                    command.reply(getTranslation("edit.usage"));
                     return;
                 }
 
@@ -102,11 +111,11 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 CustomCommand customCommand = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
 
                 // If the command doesn't exist notify the user
-                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown())) {
+                if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).editCommandByName(user, name, content, customCommand.getCooldown(), customCommand.getAccessLevel())) {
                     // Reply to the user
-                    command.reply(getTranslation( "edit.successful", name));
+                    command.reply(getTranslation("edit.successful", name));
                 } else {
-                    command.reply(getTranslation( "edit.doesntExist", name));
+                    command.reply(getTranslation("edit.doesntExist", name));
                 }
             }
         }
@@ -129,7 +138,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 // If the command doesn't exist
                 if (ServiceRegistry.get(DataService.class).get(CommandRepository.class).deleteCommandByName(user, name)) {
                     // Reply to the user
-                    command.reply(getTranslation( "delete.successful", name));
+                    command.reply(getTranslation("delete.successful", name));
                 } else {
                     command.reply(getTranslation("delete.doesntExist", name));
                 }
@@ -140,7 +149,7 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
             if (user.hasPermission(command.getSender(), "commands.user.list")) {
                 List<CustomCommand> commands = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getAllCommands(user);
                 if (commands == null) {
-                    command.reply(getTranslation( "commands.noneAvailable"));
+                    command.reply(getTranslation("commands.noneAvailable"));
                 } else {
                     StringBuilder builder = new StringBuilder();
                     builder.append("[");
@@ -157,10 +166,16 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
                 }
             }
         }
+
+        // Execute registered commands using the new system
+        super.onCommand(e);
+
+        // TODO Migrate all of these commands to the new system
     }
 
     /**
      * Handles the execution of custom commands.
+     *
      * @param e A TwasiMessageEvent
      */
     @Override
@@ -173,29 +188,35 @@ public class CommandsUserPlugin extends TwasiUserPlugin {
 
         CustomCommand command = ServiceRegistry.get(DataService.class).get(CommandRepository.class).getCommandByName(user, name);
 
-        if (command != null) {
-            // Is it on cooldown?
-            if (cooldowns.containsKey(command.getId())) {
-                // if the earliest next use is in the future, skip it. It's on cooldown.
-                if (cooldowns.get(command.getId()).after(new Date())) {
-                    return;
-                }
+        // Check whether command exists
+        if (command == null)
+            return;
+
+        // Check whether user is allowed to execute the command
+        if (command.getAccessLevel().getLevel() > CommandAccessLevel.getAccessLevelOfUser(msg.getSender(), user).getLevel())
+            return;
+
+        // Is it on cooldown?
+        if (cooldowns.containsKey(command.getId())) {
+            // if the earliest next use is in the future, skip it. It's on cooldown.
+            if (cooldowns.get(command.getId()).after(new Date())) {
+                return;
             }
-
-            msg.reply(command.getContent());
-
-            // increment uses
-            command.setUses(command.getUses() + 1);
-
-            // apply cooldown, if any
-            if (command.getCooldown() != 0) {
-                Date now = new Date();
-                Date earliestNextUse = new Date(now.getTime() + command.getCooldown() * 1000);
-                cooldowns.put(command.getId(), earliestNextUse);
-            }
-
-            ServiceRegistry.get(DataService.class).get(CommandRepository.class).commit(command);
         }
+
+        msg.reply(command.getContent());
+
+        // increment uses
+        command.setUses(command.getUses() + 1);
+
+        // apply cooldown, if any
+        if (command.getCooldown() != 0) {
+            Date now = new Date();
+            Date earliestNextUse = new Date(now.getTime() + command.getCooldown() * 1000);
+            cooldowns.put(command.getId(), earliestNextUse);
+        }
+
+        ServiceRegistry.get(DataService.class).get(CommandRepository.class).commit(command);
     }
 
     @Override

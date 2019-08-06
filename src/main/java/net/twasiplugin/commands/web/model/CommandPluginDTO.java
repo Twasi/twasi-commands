@@ -1,9 +1,11 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
+import net.twasiplugin.commands.CommandAccessLevel;
 import net.twasiplugin.commands.CommandRepository;
 import net.twasiplugin.commands.CustomCommand;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +22,8 @@ public class CommandPluginDTO {
         return repo.getAllCommands(user).stream().map(cmd -> new CommandDTO(user, cmd)).collect(Collectors.toList());
     }
 
-    public CommandDTO update(String id, String name, String content, int cooldown) {
-        if (repo.editCommand(user, id, name, content, cooldown)) {
+    public CommandDTO update(String id, String name, String content, int cooldown, String accessLevel) {
+        if (repo.editCommand(user, id, name, content, cooldown, CommandAccessLevel.valueOf(accessLevel.toUpperCase()))) {
             return new CommandDTO(user, repo.getCommandById(user, id));
         }
         return null;
@@ -40,14 +42,18 @@ public class CommandPluginDTO {
         return null;
     }
 
-    public CommandDTO create(String name, String content, int cooldown) {
-        String id = repo.createCommand(user, name, content, cooldown);
+    public CommandDTO create(String name, String content, int cooldown, String accessLevel) {
+        String id = repo.createCommand(user, name, content, cooldown, CommandAccessLevel.valueOf(accessLevel.toUpperCase()));
 
         if (id == null) {
             return null;
         }
 
         return new CommandDTO(user, repo.getCommandById(user, id));
+    }
+
+    public List<TwasiCommandAccessLevelDTO> getAccessLevels() {
+        return Arrays.stream(CommandAccessLevel.values()).map(TwasiCommandAccessLevelDTO::new).collect(Collectors.toList());
     }
 
 }

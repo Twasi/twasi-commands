@@ -17,15 +17,18 @@ permissions:
   - commands.mod.add
   - commands.mod.edit
   - commands.mod.delete
+  - commands.mod.set-access
+  - commands.broadcaster.set-access
   - commands.user.list
 
 api: |
   type Commands {
     commands: [TwasiCommand],
-    update(id: String, name: String, content: String, cooldown: Int): TwasiCommand,
+    update(id: String, name: String, content: String, cooldown: Int, accessLevel: String): TwasiCommand,
     single(id: String): TwasiCommand,
     delete(id: String): TwasiCommand,
-    create(name: String, content: String, cooldown: Int): TwasiCommand
+    create(name: String, content: String, cooldown: Int, accessLevel: String): TwasiCommand,
+    accessLevels: [TwasiCommandAccessLevel]
   }
 
   type TwasiCommand {
@@ -33,5 +36,11 @@ api: |
     name: String,
     content: String,
     uses: Int,
-    cooldown: Int
+    cooldown: Int,
+    accessLevel: TwasiCommandAccessLevel
+  }
+
+  type TwasiCommandAccessLevel {
+    name: String,
+    value: Int
   }

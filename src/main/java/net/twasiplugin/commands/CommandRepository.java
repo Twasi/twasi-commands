@@ -12,6 +12,7 @@ public class CommandRepository extends Repository<CustomCommand> {
 
     /**
      * Gets a command by a user and command name
+     *
      * @param user the user to search the command for (twitch channel)
      * @param name the name of the command
      * @return the command if found, null otherwise
@@ -42,15 +43,17 @@ public class CommandRepository extends Repository<CustomCommand> {
 
     /**
      * Creates a command for a user
-     * @param user the user to create the command for (twitch channel)
-     * @param name the name of the command to create
-     * @param content the content of the new command
-     * @param cooldown the cooldown of the command in seconds
+     *
+     * @param user        the user to create the command for (twitch channel)
+     * @param name        the name of the command to create
+     * @param content     the content of the new command
+     * @param cooldown    the cooldown of the command in seconds
+     * @param accessLevel
      * @return the id of the created command on success, null otherwise
      */
-    public String createCommand(User user, String name, String content, int cooldown) {
+    public String createCommand(User user, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
         if (getCommandByName(user, name) == null) {
-            CustomCommand command = new CustomCommand(user, name.toLowerCase(), content, cooldown);
+            CustomCommand command = new CustomCommand(user, name.toLowerCase(), content, cooldown, accessLevel);
             store.save(command);
             return getCommandByName(user, name).getId().toString();
         }
@@ -59,14 +62,16 @@ public class CommandRepository extends Repository<CustomCommand> {
 
     /**
      * Changes a command for a user
-     * @param user the user to change the command for (twitch channel)
-     * @param id the id of the command
-     * @param name the (new) name of the command
-     * @param content the (new) content of the command
-     * @param cooldown the cooldown of the command in seconds
+     *
+     * @param user        the user to change the command for (twitch channel)
+     * @param id          the id of the command
+     * @param name        the (new) name of the command
+     * @param content     the (new) content of the command
+     * @param cooldown    the cooldown of the command in seconds
+     * @param accessLevel
      * @return true if the command was updated, false otherwise
      */
-    public boolean editCommand(User user, String id, String name, String content, int cooldown) {
+    public boolean editCommand(User user, String id, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
         CustomCommand command = getCommandById(user, id);
 
         if (command == null) {
@@ -81,22 +86,29 @@ public class CommandRepository extends Repository<CustomCommand> {
             return false;
         }
 
+        if (accessLevel == null) {
+            return false;
+        }
+
         command.setContent(content);
         command.setName(name);
         command.setCooldown(cooldown);
+        command.setAccessLevel(accessLevel);
 
         store.save(command);
         return true;
     }
-    public boolean editCommandByName(User user, String name, String content, int cooldown) {
+
+    public boolean editCommandByName(User user, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
         CustomCommand cmd = getCommandByName(user, name);
-        return editCommand(user, cmd.getId().toString(), name, content, cooldown);
+        return editCommand(user, cmd.getId().toString(), name, content, cooldown, accessLevel);
     }
 
     /**
      * Delets a command by a user and id
+     *
      * @param user the user to delete the command for (twitch channel)
-     * @param id the id of the command
+     * @param id   the id of the command
      * @return true if the command was deleted, false otherwise
      */
     public boolean deleteCommand(User user, String id) {
@@ -109,6 +121,7 @@ public class CommandRepository extends Repository<CustomCommand> {
         store.delete(command);
         return true;
     }
+
     public boolean deleteCommandByName(User user, String name) {
         CustomCommand cmd = getCommandByName(user, name);
         return deleteCommand(user, cmd.getId().toString());
@@ -116,6 +129,7 @@ public class CommandRepository extends Repository<CustomCommand> {
 
     /**
      * Return all commands by a useer
+     *
      * @param user the user to look up
      * @return all commands by the user
      */

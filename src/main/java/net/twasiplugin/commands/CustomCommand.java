@@ -42,20 +42,29 @@ public class CustomCommand extends BaseEntity {
     private int cooldown;
 
     /**
+     * Access level of the command
+     */
+    private CommandAccessLevel accessLevel = CommandAccessLevel.VIEWER;
+
+    /**
      * Creates an empty CustomCommand. Used by the database.
      */
-    public CustomCommand() {}
+    public CustomCommand() {
+    }
 
     /**
      * Creates a new CustomCommand by user, name and content
+     *
      * @param user
      * @param name
      * @param content
+     * @param accessLevel
      */
-    CustomCommand(User user, String name, String content, int cooldown) {
+    CustomCommand(User user, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
         this.user = user;
         this.name = name;
         this.content = content;
+        this.accessLevel = accessLevel;
         this.uses = 0;
         this.cooldown = cooldown;
     }
@@ -84,7 +93,9 @@ public class CustomCommand extends BaseEntity {
         this.content = content;
     }
 
-    public User getUser() { return user; }
+    public User getUser() {
+        return user;
+    }
 
     public int getUses() {
         return uses;
@@ -100,5 +111,13 @@ public class CustomCommand extends BaseEntity {
 
     public void setCooldown(int cooldown) {
         this.cooldown = cooldown;
+    }
+
+    public CommandAccessLevel getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(CommandAccessLevel accessLevel) {
+        this.accessLevel = accessLevel;
     }
 }

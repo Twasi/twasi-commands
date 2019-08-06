@@ -12,3 +12,9 @@ delete.doesntExist=The command %s doesn't exist.
 
 commands.noneFound=There are no commands available right now. But hey, you can add one: !add [command] [content]
 commands.available=Available commands: %s
+
+set-access-level.syntax=Usage: !setaccess [command] [level], Available levels (descending): Broadcaster, Moderator, VIP, Subscriber, Follower, Viewer.
+set-access-level.broadcaster-only={sender.displayName} The access level of this command can only be changed by the broadcaster.
+set-access-level.doesnt-exist=The command {args.1} doesn't exist.
+set-access-level.success=The access-level of {command} was successfully changed to {level}.
+set-access-level.info=The current access-level of the command {command.name} is: {command.accessLevel.name}
