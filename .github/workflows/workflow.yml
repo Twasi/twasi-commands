@@ -15,4 +15,4 @@ jobs:
         java-version: 1.8
     - uses: Twasi/build-twasi-plugin@master
       with:
-        plugin-name: Twasi-Commands
+        pluginName: Twasi-Commands
