@@ -1,6 +1,6 @@
 name: Build Twasi Plugin
 
-on: [push]
+on: [push, check_run]
 
 jobs:
   build:
