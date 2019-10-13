@@ -43,7 +43,7 @@
 
     <distributionManagement>
         <repository>
-            <id>libs-release-local</id>
+            <id>central</id>
             <name>libs-release-local</name>
             <url>https://artifactory.twasi.net/artifactory/libs-release-local</url>
         </repository>
