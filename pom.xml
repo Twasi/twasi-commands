@@ -53,7 +53,7 @@
         <dependency>
             <groupId>net.twasi</groupId>
             <artifactId>twasi-core</artifactId>
-            <version>3a111bc0aa466ef87287fed35f05dd4f0b496157</version>
+            <version>4cc6dae2419533f15a4553f0e86a4b95a6416f4d</version>
         </dependency>
     </dependencies>
 

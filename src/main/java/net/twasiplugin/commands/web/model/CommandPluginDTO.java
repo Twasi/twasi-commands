@@ -1,6 +1,7 @@
 package net.twasiplugin.commands.web.model;
 
 import net.twasi.core.database.models.User;
+import net.twasi.core.graphql.model.GraphQLPagination;
 import net.twasiplugin.commands.database.CommandRepository;
 import net.twasiplugin.commands.database.CustomCommand;
 import net.twasiplugin.commands.CommandAccessLevel;
@@ -18,8 +19,11 @@ public class CommandPluginDTO {
         this.user = user;
     }
 
-    public List<CommandDTO> commands() {
-        return repo.getAllCommands(user).stream().map(cmd -> new CommandDTO(user, cmd)).collect(Collectors.toList());
+    public GraphQLPagination<CommandDTO> getCommands() {
+        return new GraphQLPagination<>(
+                () -> repo.countUserCommands(user),
+                (pg) -> repo.getPaginatedCommands(user, pg).stream().map(cmd -> new CommandDTO(user, cmd)).collect(Collectors.toList())
+        );
     }
 
     public CommandDTO update(String id, String name, String content, int cooldown, String accessLevel) {

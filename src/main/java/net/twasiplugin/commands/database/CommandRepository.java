@@ -142,4 +142,12 @@ public class CommandRepository extends Repository<CustomCommand> {
         }
         return commands;
     }
+
+    public List<CustomCommand> getPaginatedCommands(User user, int page) {
+        return query().field("user").equal(user).asList(paginated(page));
+    }
+
+    public long countUserCommands(User user) {
+        return query().field("user").equal(user).count();
+    }
 }

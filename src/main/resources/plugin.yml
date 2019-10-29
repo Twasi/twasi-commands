@@ -24,7 +24,7 @@ permissions:
 
 api: |
   type Commands {
-    commands: [TwasiCommand],
+    commands: TwasiCommandPageable,
     update(id: String, name: String, content: String, cooldown: Int, accessLevel: String): TwasiCommand,
     single(id: String): TwasiCommand,
     delete(id: String): TwasiCommand,
@@ -32,7 +32,7 @@ api: |
     accessLevels: [TwasiCommandAccessLevel]
   }
 
-  type TwasiCommand {
+  pageable type TwasiCommand {
     id: String,
     name: String,
     content: String,
