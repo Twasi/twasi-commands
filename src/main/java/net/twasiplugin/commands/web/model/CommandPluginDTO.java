@@ -26,8 +26,8 @@ public class CommandPluginDTO {
         );
     }
 
-    public CommandDTO update(String id, String name, String content, int cooldown, String accessLevel) {
-        if (repo.editCommand(user, id, name, content, cooldown, CommandAccessLevel.valueOf(accessLevel.toUpperCase()))) {
+    public CommandDTO update(String id, String name, String content, int cooldown, String accessLevel, int uses) {
+        if (repo.editCommand(user, id, name, content, cooldown, CommandAccessLevel.valueOf(accessLevel.toUpperCase()), uses)) {
             return new CommandDTO(user, repo.getCommandById(user, id));
         }
         return null;

@@ -72,7 +72,7 @@ public class CommandRepository extends Repository<CustomCommand> {
      * @param accessLevel
      * @return true if the command was updated, false otherwise
      */
-    public boolean editCommand(User user, String id, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
+    public boolean editCommand(User user, String id, String name, String content, int cooldown, CommandAccessLevel accessLevel, int uses) {
         CustomCommand command = getCommandById(user, id);
 
         if (command == null) {
@@ -95,6 +95,7 @@ public class CommandRepository extends Repository<CustomCommand> {
         command.setName(name);
         command.setCooldown(cooldown);
         command.setAccessLevel(accessLevel);
+        command.setUses(uses);
 
         store.save(command);
         return true;
@@ -102,7 +103,7 @@ public class CommandRepository extends Repository<CustomCommand> {
 
     public boolean editCommandByName(User user, String name, String content, int cooldown, CommandAccessLevel accessLevel) {
         CustomCommand cmd = getCommandByName(user, name);
-        return editCommand(user, cmd.getId().toString(), name, content, cooldown, accessLevel);
+        return editCommand(user, cmd.getId().toString(), name, content, cooldown, accessLevel, cmd.getUses());
     }
 
     /**
